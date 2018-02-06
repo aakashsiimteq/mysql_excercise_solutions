@@ -3,7 +3,7 @@
 ````
 Solution :
 CREATE TABLE `countries` (
-	 `country_id` VARCHAR(3) NOT NULL,
+    `country_id` VARCHAR(3) NOT NULL,
     `country_name` VARCHAR(20) NOT NULL,
     `region_id` INT(5) UNSIGNED NOT NULL,
     PRIMARY KEY (`country_id`)
