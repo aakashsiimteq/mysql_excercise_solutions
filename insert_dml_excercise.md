@@ -67,7 +67,8 @@ Solution:
 Solution:
   INSERT INTO countries SELECT * FROM country_new;
 
-This wil run into error since the country_id is varchar(2) in my previous assumption so rectifying it with and alter statement would fix the issue:
+This wil run into error since the country_id is varchar(2) in my previous assumption so rectifying it
+ with and alter statement would fix the issue:
 
   ALTER TABLE `country_new` change `country_id` `country_id` VARCHAR(5) NULL DEFAULT NULL;
 ````
