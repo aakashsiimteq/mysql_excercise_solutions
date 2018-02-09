@@ -76,7 +76,8 @@ This wil run into error since the country_id is varchar(2) in my previous assump
 
 ````sql
 Solution:
-Assuming the structure of jobs to have columns like job_id, job_title, min_salary, max_salary. So recreating the jobs table
+Assuming the structure of jobs to have columns like job_id, job_title, min_salary, max_salary.
+So recreating the jobs table
 CREATE TABLE IF NOT EXISTS `jobs`;
 CREATE TABLE `jobs` (
   `job_id` INT(11) UNSIGNED NOT NULL,
@@ -96,7 +97,8 @@ So the final structure of the table jobs will look like:
 | max_salary | float(6,2)       | NO   |     | NULL    |       |
 +------------+------------------+------+-----+---------+-------+
 
-now since jobs have the job_id column as primary key the value will never have any duplicate values so the insert statement now
+now since jobs have the job_id column as primary key the value will never have any duplicate values
+so the insert statement now
 
 INSERT INTO `jobs` VALUES ('1','Programmer','20000','25000');
 ````
@@ -105,7 +107,8 @@ INSERT INTO `jobs` VALUES ('1','Programmer','20000','25000');
 
 ````SQL
 Solution:
-Assuming the structure of jobs to have columns like job_id, job_title, min_salary, max_salary. So recreating the jobs table
+Assuming the structure of jobs to have columns like job_id, job_title, min_salary, max_salary. So
+recreating the jobs table
 CREATE TABLE IF NOT EXISTS `jobs`;
 CREATE TABLE `jobs` (
   `job_id` INT(11) UNSIGNED NOT NULL,
@@ -125,7 +128,8 @@ So the final structure of the table jobs will look like:
 | max_salary | float(6,2)       | NO   |     | NULL    |       |
 +------------+------------------+------+-----+---------+-------+
 
-now since jobs have the job_id column as primary key the value will never have any duplicate values so the insert statement now
+now since jobs have the job_id column as primary key the value will never have any duplicate values so
+the insert statement now
 
   INSERT INTO `jobs` VALUES ('1','Programmer','20000','25000');
 ````
@@ -134,7 +138,8 @@ now since jobs have the job_id column as primary key the value will never have a
 
 ````SQL
 Solution:
-Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the countries table
+Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating
+the countries table
 
 Solution:
 CREATE TABLE `countries` (
@@ -153,7 +158,8 @@ So the final structure of the table countries will look like:
 | region_id    | int(5) unsigned | NO   | PRI | NULL    |       |
 +--------------+-----------------+------+-----+---------+-------+
 
-now since countries have the country_id and region_id column as primary key the value will never have any duplicate values so the insert statement now
+now since countries have the country_id and region_id column as primary key the value will never have any
+duplicate values so the insert statement now
 
   INSERT INTO countries VALUES(325,'USA',128);
 ````
@@ -162,7 +168,8 @@ now since countries have the country_id and region_id column as primary key the 
 
 ````sql
 Solution:
-Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the countries table
+Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the
+countries table
 
 CREATE TABLE `countries` (
   `country_id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -189,7 +196,8 @@ now since countries have the country_id is autoincremented the insert statement 
 
 ````sql
 Solution:
-Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the countries table
+Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the
+countries table
 
 Solution:
 CREATE TABLE `countries` (
