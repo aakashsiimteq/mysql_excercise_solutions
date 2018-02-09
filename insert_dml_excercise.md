@@ -160,11 +160,10 @@ now since countries have the country_id and region_id column as primary key the 
 
 #### 10. Write a SQL statement to insert rows into the table countries in which the value of country_id column will be unique and auto incremented
 
+````sql
 Solution:
 Assuming the structure of countries to have columns like country_id, country_name, region_id. So recreating the countries table
 
-````sql
-Solution:
 CREATE TABLE `countries` (
   `country_id` INT(11) NOT NULL AUTO_INCREMENT,
   `country_name` varchar(20) NOT NULL,
