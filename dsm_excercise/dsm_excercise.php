@@ -1,9 +1,6 @@
 <?php include 'core/init.php'; ?>
 <?php
-
-  $sql_diamond = mysqli_query($con,"SELECT * FROM dsm_project.diamonds WHERE `diamond_shape_id` = '2' AND `diamond_size` >= 0.90 LIMIT 94");
-
-
+  $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_name`),`attribute_id`, count(distinct(`attribute_name`)) FROM `attributes` WHERE `attribute_type` = 'Shape'");
  ?>
 <!DOCTYPE html>
 <html>
@@ -15,7 +12,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
   </head>
   <body>
-    <table class="table table-bordered table-hover table-condensed">
+    <div class="container">
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label for="">Select diamond shape</label>
+          <select class="form-control" name="" id="product">
+            <option selected disabled>Choose shape</option>
+            <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
+              <option value="<?= $row_shape['attribute_id'] ?>"><?= $row_shape['attribute_name'] ?></option>
+            <?php endwhile; ?>
+          </select>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="search_table" class="control-label">Search Inventory</label>
+          <input type="text" name="search_table" id="search_table" placeholder="Search Inventory" class="form-control" />
+        </div>
+      </div>
+    </div>
+    <table class="table table-bordered table-hover table-condensed" id="searchtable">
       <thead class="thead-inverse" style="font-size:12px;">
         <th>LOT #</th>
         <th>LOC</th>
@@ -55,92 +69,45 @@
         <th>Approval No</th>
         <th>Approval Date</th>
       </thead>
-      <tbody >
-        <?php while($row_diamond = mysqli_fetch_assoc($sql_diamond)): ?>
-          <?php
+      <tbody id="display">
 
-            $sql_office = mysqli_query($con,"SELECT `office_name` FROM dsm_project.`offices` WHERE `office_id` = '".$row_diamond['office_id']."'");
-            $row_office = mysqli_fetch_assoc($sql_office);
-
-            $sql_shape = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_shape_id']."'");
-            $row_shape = mysqli_fetch_assoc($sql_shape);
-
-            $sql_customer = mysqli_query($con,"SELECT `company_name` FROM `users` WHERE `user_id` = '".$row_diamond['diamond_customer_id']."'");
-            $row_customer = mysqli_fetch_assoc($sql_customer);
-
-            $sql_lab = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_lab_id']."'");
-            $row_lab = mysqli_fetch_assoc($sql_lab);
-
-            $sql_clr = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_clr_id']."'");
-            $row_clr = mysqli_fetch_assoc($sql_clr);
-
-            $sql_cla = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_cla_id']."'");
-            $row_cla = mysqli_fetch_assoc($sql_cla);
-
-            $sql_flr = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_flr_id']."'");
-            $row_flr = mysqli_fetch_assoc($sql_flr);
-
-            $sql_fcut = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_fcut_id']."'");
-            $row_fcut = mysqli_fetch_assoc($sql_fcut);
-
-            $sql_pol = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_pol_id']."'");
-            $row_pol = mysqli_fetch_assoc($sql_pol);
-
-            $sql_sym = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_sym_id']."'");
-            $row_sym = mysqli_fetch_assoc($sql_sym);
-           ?>
-          <tr style="font-size:12px;">
-            <td><?= $row_diamond['diamond_lot_no'] ?></td>
-            <td><?= $row_office['office_name'] ?></td>
-            <td><?= $row_shape['attribute_name'] ?></td>
-            <td><?= $row_diamond['diamond_size'] ?></td>
-            <td><?= $row_lab['attribute_name'] ?></td>
-            <td><?= $row_diamond['diamond_cert'] ?></td>
-            <td><?= $row_clr['attribute_name'] ?></td>
-            <td><?= $row_cla['attribute_name'] ?></td>
-            <td><?= $row_flr['attribute_name'] ?></td>
-            <td><?= $row_fcut['attribute_name'] ?></td>
-            <td><?= $row_pol['attribute_name'] ?></td>
-            <td><?= $row_sym['attribute_name'] ?></td>
-            <td></td>
-            <td><?= $row_diamond['diamond_ains'] ?></td>
-            <td><?= $row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3'] ?></td>
-            <td><?= '$'. $row_diamond['diamond_price_rapnet'] ?></td>
-            <td><?= $row_diamond['diamond_discount']. '%' ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_perct'],2)?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_total'],2)?></td>
-            <td><?= $row_diamond['diamond_discount_revaluated'] . '%' ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_perct_revaluated'],2) ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_total_revaluated'],2) ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_rapnet_final'],2) ?></td>
-            <td><?= $row_diamond['diamond_discount_final']. '%'  ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_perct_final'],2) ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_total_final'],2) ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_sell'],2) ?></td>
-            <td><?= $row_diamond['diamond_discount_sell']. '%'  ?></td>
-            <td><?= '$'. round($row_diamond['diamond_price_perct_sell'],2) ?></td>
-            <td><?= $row_diamond['diamond_status'] ?></td>
-            <td><?= $row_customer['company_name'] ?></td>
-            <td><?= $row_diamond['diamond_status_front'] ?></td>
-            <?php if ($row_diamond['diamond_show_rapnet'] == 'Yes'): ?>
-              <td>Show</td>
-            <?php else: ?>
-              <td>Hide</td>
-            <?php endif; ?>
-            <td><?= date('d/m/Y',strtotime($row_diamond['diamond_purchase_date'])) ?></td>
-            <?php if ($row_diamond['diamond_party_name'] == ''): ?>
-              <td>Not available</td>
-            <?php else: ?>
-              <td><?= $row_diamond['diamond_party_name'] ?></td>
-            <?php endif; ?>
-            <td><?= $row_diamond['diamond_approval_no'] ?></td>
-            <td></td>
-          </tr>
-        <?php endwhile; ?>
       </tbody>
     </table>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#product").change(function()
+          {
+             var id=$(this).val();
+             var dataString = 'shape='+ id;
+             $.ajax
+             ({
+              type: "POST",
+              url: "_show_diamond.php",
+              data: dataString,
+              cache: false,
+              success: function(html)
+              {
+                 $("#display").html(html);
+              }
+             });
+        });
+      });
+    </script>
+    <script type="text/javascript">
+      $("#search_table").keyup(function(){
+        _this = this;
+        // Show only matching TR, hide rest of them
+        $.each($("#searchtable tbody tr"), function() {
+        if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+            $(this).hide();
+            else
+            $(this).show();
+        });
+      });
+    </script>
   </body>
 </html>
