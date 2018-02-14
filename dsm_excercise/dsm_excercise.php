@@ -1,6 +1,6 @@
 <?php include 'core/init.php'; ?>
 <?php
-  $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_name`),`attribute_id`, count(distinct(`attribute_name`)) FROM `attributes` WHERE `attribute_type` = 'Shape'");
+  $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_name`),`attribute_id` FROM `attributes` WHERE `attribute_type` = 'Shape'");
  ?>
 <!DOCTYPE html>
 <html>
@@ -17,7 +17,7 @@
         <div class="form-group col-md-4">
           <label for="">Select diamond shape</label>
           <select class="form-control" name="" id="product">
-            <option selected disabled>Choose shape</option>
+            <option disabled>Choose shape</option>
             <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
               <option value="<?= $row_shape['attribute_id'] ?>"><?= $row_shape['attribute_name'] ?></option>
             <?php endwhile; ?>
@@ -78,6 +78,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+      $(window).load(function() {
+        $.ajax({
+          url: "_show_diamond.php",
+          context: document.body,
+          success: function(html){
+             $("#product option[value=2]").prop("selected", true);
+             $("#display").html(html);
+          }
+        });
+      });
       $(document).ready(function() {
         $("#product").change(function()
           {
@@ -95,6 +105,7 @@
               }
              });
         });
+
       });
     </script>
     <script type="text/javascript">
