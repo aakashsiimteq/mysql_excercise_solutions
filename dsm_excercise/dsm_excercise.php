@@ -9,23 +9,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>DSM Diamonds | Certified</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
     <div class="container">
       <div class="row">
-        <div class="form-group col-md-4">
-          <label for="">Select diamond shape</label>
-          <select class="form-control" name="" id="product">
-            <option disabled>Choose shape</option>
-            <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
-              <?php
-                $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."'");
-                $row_count = mysqli_fetch_array($sql_count);
-               ?>
-              <option value="<?= $row_shape['attribute_id'] ?>"><?= $row_shape['attribute_name'] ." (".$row_count[0].")"?></option>
-            <?php endwhile; ?>
-          </select>
+        <div class="row">
+          <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
+            <?php
+              $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."'");
+              $row_count = mysqli_fetch_array($sql_count);
+             ?>
+             <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" class="btn btn-sm btn-primary product">
+               <?= $row_shape['attribute_name'] ." (".$row_count[0].")"?>
+             </button>
+          <?php endwhile; ?>
         </div>
         <div class="form-group col-md-6">
           <label for="search_table" class="control-label">Search Inventory</label>
@@ -87,13 +85,12 @@
           url: "_show_diamond.php",
           context: document.body,
           success: function(html){
-             $("#product option[value=2]").prop("selected", true);
              $("#display").html(html);
           }
         });
       });
       $(document).ready(function() {
-        $("#product").change(function()
+        $(".product").click(function()
           {
              var id=$(this).val();
              var dataString = 'shape='+ id;

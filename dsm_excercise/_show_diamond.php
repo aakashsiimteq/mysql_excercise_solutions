@@ -5,9 +5,9 @@
   $diamond_shape = $_POST['shape'];
 
   if (!isset($diamond_shape)) {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '2' AND `diamond_size` >= 0.90 LIMIT 100");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '2'");
   } else {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' LIMIT 100");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape'");
   }
   while($row_diamond = mysqli_fetch_assoc($sql_diamond)){
 
