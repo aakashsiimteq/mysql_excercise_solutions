@@ -19,7 +19,11 @@
           <select class="form-control" name="" id="product">
             <option disabled>Choose shape</option>
             <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
-              <option value="<?= $row_shape['attribute_id'] ?>"><?= $row_shape['attribute_name'] ?></option>
+              <?php
+                $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."'");
+                $row_count = mysqli_fetch_array($sql_count);
+               ?>
+              <option value="<?= $row_shape['attribute_id'] ?>"><?= $row_shape['attribute_name'] ." (".$row_count[0].")"?></option>
             <?php endwhile; ?>
           </select>
         </div>
