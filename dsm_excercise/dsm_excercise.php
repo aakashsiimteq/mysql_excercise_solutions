@@ -1,6 +1,8 @@
 <?php include 'core/init.php'; ?>
 <?php
   $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_name`),`attribute_id` FROM `attributes` WHERE `attribute_type` = 'Shape'");
+
+  $sql_table = mysqli_query($con,"SELECT DISTINCT (`diamond_status`), COUNT(*) AS statusCount,CEIL(SUM(`diamond_size`)) AS sumCarat FROM `diamonds` WHERE    `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%'  AND `diamond_status` NOT IN ('Invoiced' , 'Deleted') GROUP BY (`diamond_status`)");
  ?>
 <!DOCTYPE html>
 <html>
@@ -11,70 +13,120 @@
     <title>DSM Diamonds | Certified</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
-  <body>
+  <body style="padding-top:20px;">
     <div class="container">
-      <div class="row">
-        <div class="row">
-          <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
-            <?php
-              $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."'");
-              $row_count = mysqli_fetch_array($sql_count);
-             ?>
-             <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" class="btn btn-sm btn-primary product">
-               <?= $row_shape['attribute_name'] ." (".$row_count[0].")"?>
-             </button>
-          <?php endwhile; ?>
-        </div>
+      <div class="row" style="padding-bottom:20px;">
         <div class="form-group col-md-6">
           <label for="search_table" class="control-label">Search Inventory</label>
           <input type="text" name="search_table" id="search_table" placeholder="Search Inventory" class="form-control" />
         </div>
+        <div class="col-md-6">
+          <table class="table table-bordered table-hover table-sm">
+            <thead>
+              <th>Status</th>
+              <th>Count</th>
+              <th>Carat</th>
+            </thead>
+            <tbody>
+              <?php while($row_table = mysqli_fetch_assoc($sql_table)): ?>
+                <?php if ($row_table['diamond_status'] == 'InTranist'): ?>
+                  <tr class='table-warning'>
+                    <td><button class="btn btn-link status" value="<?= $row_table['diamond_status'] ?>" ><?= $row_table['diamond_status'] ?></button></td>
+                    <td><?= $row_table['statusCount'] ?></td>
+                    <td><?= $row_table['sumCarat'] ?></td>
+                  </tr>
+                <?php elseif($row_table['diamond_status'] == 'On Consignment'): ?>
+                  <tr class='table-danger'>
+                    <td><button class="btn btn-link status" value="<?= $row_table['diamond_status'] ?>" ><?= $row_table['diamond_status'] ?></button></td>
+                    <td><?= $row_table['statusCount'] ?></td>
+                    <td><?= $row_table['sumCarat'] ?></td>
+                  </tr>
+                <?php elseif($row_table['diamond_status'] == 'Reserve'): ?>
+                  <tr class='table-info'>
+                    <td><button class="btn btn-link status" value="<?= $row_table['diamond_status'] ?>" ><?= $row_table['diamond_status'] ?></button></td>
+                    <td><?= $row_table['statusCount'] ?></td>
+                    <td><?= $row_table['sumCarat'] ?></td>
+                  </tr>
+                <?php elseif($row_table['diamond_status'] == 'In Transfer Process'): ?>
+                  <tr class='table-success'>
+                    <td><button class="btn btn-link status" value="<?= $row_table['diamond_status'] ?>" ><?= $row_table['diamond_status'] ?></button></td>
+                    <td><?= $row_table['statusCount'] ?></td>
+                    <td><?= $row_table['sumCarat'] ?></td>
+                  </tr>
+                <?php else: ?>
+                  <tr>
+                    <td><button class="btn btn-link status" value="<?= $row_table['diamond_status'] ?>" ><?= $row_table['diamond_status'] ?></button></td>
+                    <td><?= $row_table['statusCount'] ?></td>
+                    <td><?= $row_table['sumCarat'] ?></td>
+                  </tr>
+                <?php endif; ?>
+              <?php endwhile; ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
+          <?php
+            $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
+            $row_count = mysqli_fetch_array($sql_count);
+           ?>
+           <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" class="btn btn-primary product" style="margin-left:15px; margin-bottom:15px;">
+             <?= $row_shape['attribute_name']." (".$row_count[0].")"?>
+           </button>
+        <?php endwhile; ?>
       </div>
     </div>
-    <table class="table table-bordered table-hover table-condensed" id="searchtable">
-      <thead class="thead-inverse" style="font-size:12px;">
-        <th>LOT #</th>
-        <th>LOC</th>
-        <th>Shape</th>
-        <th>Carat</th>
-        <th>Lab</th>
-        <th>Certificate</th>
-        <th>CLR</th>
-        <th>CLA</th>
-        <th>FLR</th>
-        <th>Fcut</th>
-        <th>POL</th>
-        <th>SYM</th>
-        <th>INS</th>
-        <th>AINS</th>
-        <th width="20%">Mesurement (L x B x H)</th>
-        <th>Orignal rapnet</th>
-        <th>Orignal discount</th>
-        <th>Orignal p/c price</th>
-        <th>Orignal total</th>
-        <th>Revaluated discount</th>
-        <th>Revaluated p/c</th>
-        <th>Revaluated total</th>
-        <th>Final rapnet</th>
-        <th>Final discount</th>
-        <th>Final p/c price</th>
-        <th>Final total</th>
-        <th>Selling discount</th>
-        <th>Selling p/c price</th>
-        <th>Selling total</th>
-        <th>Status</th>
-        <th>Customer</th>
-        <th>Front View</th>
-        <th>Rapnet View</th>
-        <th>Purchase Date</th>
-        <th>Party</th>
-        <th>Approval No</th>
-        <th>Approval Date</th>
-      </thead>
-      <tbody id="display">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-sm" id="searchtable">
+            <thead class="thead-dark" style="font-size:12px;">
+              <th>LOT #</th>
+              <th>LOC</th>
+              <th>Shape</th>
+              <th>Carat</th>
+              <th>Lab</th>
+              <th>Certificate</th>
+              <th>CLR</th>
+              <th>CLA</th>
+              <th>FLR</th>
+              <th>Fcut</th>
+              <th>POL</th>
+              <th>SYM</th>
+              <th>INS</th>
+              <th>AINS</th>
+              <th width="20%">Mesurement (L x B x H)</th>
+              <th>Orignal rapnet</th>
+              <th>Orignal discount</th>
+              <th>Orignal p/c price</th>
+              <th>Orignal total</th>
+              <th>Revaluated discount</th>
+              <th>Revaluated p/c</th>
+              <th>Revaluated total</th>
+              <th>Final rapnet</th>
+              <th>Final discount</th>
+              <th>Final p/c price</th>
+              <th>Final total</th>
+              <th>Selling discount</th>
+              <th>Selling p/c price</th>
+              <th>Selling total</th>
+              <th>Status</th>
+              <th>Customer</th>
+              <th>Front View</th>
+              <th>Rapnet View</th>
+              <th>Purchase Date</th>
+              <th>Party</th>
+              <th>Approval No</th>
+              <th>Approval Date</th>
+            </thead>
+            <tbody id="display">
 
-      </tbody>
-    </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
@@ -110,7 +162,7 @@
       });
     </script>
     <script type="text/javascript">
-      $("#search_table").keyup(function(){
+      $("#search_table").on('input',function(){
         _this = this;
         // Show only matching TR, hide rest of them
         $.each($("#searchtable tbody tr"), function() {
@@ -119,6 +171,12 @@
             else
             $(this).show();
         });
+      });
+    </script>
+    <script type="text/javascript">
+      $('.btn').click(function() {
+        var id = $(this).val();
+        $('#search_table').val(id);
       });
     </script>
   </body>
