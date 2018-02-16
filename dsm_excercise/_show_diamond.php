@@ -5,9 +5,9 @@
   $diamond_shape = $_POST['shape'];
 
   if (!isset($diamond_shape)) {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '2' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '2' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
   } else {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
   }
   while($row_diamond = mysqli_fetch_assoc($sql_diamond)){
 
@@ -44,6 +44,7 @@
     if ($row_diamond['diamond_status'] == 'InTranist') {
       echo "
       <tr style='font-size:12px;' class='table-warning'>
+        <td><input type='checkbox' class='checkbox freetrans' name='diaid[]' value=".$row_diamond['diamond_id']."></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -95,6 +96,7 @@
     }elseif ($row_diamond['diamond_status'] == 'On Consignment') {
       echo "
       <tr style='font-size:12px;' class='table-danger'>
+        <td></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -149,6 +151,7 @@
     }elseif ($row_diamond['diamond_status'] == 'Reserve') {
       echo "
       <tr style='font-size:12px;' class='table-primary'>
+        <td></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -200,6 +203,7 @@
     }elseif ($row_diamond['diamond_status'] == 'In Transfer Process') {
       echo "
       <tr style='font-size:12px;' class='table-success'>
+        <td></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -251,6 +255,7 @@
     }else {
       echo "
       <tr style='font-size:12px;'>
+        <td></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -302,3 +307,15 @@
     }
 
   }
+?>
+<script type="text/javascript">
+  $(".freetrans").click(function(){
+    $('#dropdownMenuButton').prop('disabled', false)
+    // var isDisabled = $('#dropdownMenuButton').is(':disabled');
+    // if (isDisabled) {
+    //   $('#dropdownMenuButton').prop('disabled', false)
+    // }else {
+    //   $('#dropdownMenuButton').prop('disabled', true)
+    // }
+  });
+</script>

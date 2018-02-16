@@ -1,6 +1,6 @@
 <?php include 'core/init.php'; ?>
 <?php
-  $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_name`),`attribute_id` FROM `attributes` WHERE `attribute_type` = 'Shape'");
+  $sql_shape = mysqli_query($con,"SELECT distinct(`attribute_label`),`attribute_id` FROM `attributes` WHERE `attribute_type` = 'Shape'");
 
   $sql_table = mysqli_query($con,"SELECT DISTINCT (`diamond_status`), COUNT(*) AS statusCount,CEIL(SUM(`diamond_size`)) AS sumCarat FROM `diamonds` WHERE    `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%'  AND `diamond_status` NOT IN ('Invoiced' , 'Deleted') GROUP BY (`diamond_status`)");
  ?>
@@ -19,9 +19,20 @@
         <div class="form-group col-md-6">
           <label for="search_table" class="control-label">Search Inventory</label>
           <input type="text" name="search_table" id="search_table" placeholder="Search Inventory" class="form-control" />
+          <br>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" disabled type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Action
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="javascript:void(0)" onclick="submit()">Free items from Intransit</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </div>
         </div>
         <div class="col-md-6">
-          <table class="table table-bordered table-hover table-sm">
+          <table class="table table-bordered table-sm">
             <thead>
               <th>Status</th>
               <th>Count</th>
@@ -71,8 +82,8 @@
             $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
             $row_count = mysqli_fetch_array($sql_count);
            ?>
-           <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" class="btn btn-primary product" style="margin-left:15px; margin-bottom:15px;">
-             <?= $row_shape['attribute_name']." (".$row_count[0].")"?>
+           <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" class="btn btn-sm btn-outline-primary product" style="margin-left:15px; margin-bottom:15px;">
+             <?= $row_shape['attribute_label']." (".$row_count[0].")"?>
            </button>
         <?php endwhile; ?>
       </div>
@@ -82,6 +93,7 @@
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-sm" id="searchtable">
             <thead class="thead-dark" style="font-size:12px;">
+              <th><input type="checkbox" class="checkbox" id="checkAll"></th>
               <th>LOT #</th>
               <th>LOC</th>
               <th>Shape</th>
@@ -131,6 +143,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
       $(window).load(function() {
         $.ajax({
@@ -162,7 +175,7 @@
       });
     </script>
     <script type="text/javascript">
-      $("#search_table").on('input',function(){
+      $("#search_table").keyup(function(){
         _this = this;
         // Show only matching TR, hide rest of them
         $.each($("#searchtable tbody tr"), function() {
@@ -174,10 +187,66 @@
       });
     </script>
     <script type="text/javascript">
-      $('.btn').click(function() {
+      $('.status').click(function() {
         var id = $(this).val();
         $('#search_table').val(id);
+        _this = this;
+        // Show only matching TR, hide rest of them
+        $.each($("#searchtable tbody tr"), function() {
+        if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+            $(this).hide();
+            else
+            $(this).show();
+        });
       });
+    </script>
+    <script type="text/javascript">
+      $("#checkAll").click(function(){
+        $('input:checkbox').not(this).prop('checked', this.checked);
+        var isDisabled = $('#dropdownMenuButton').is(':disabled');
+        if (isDisabled) {
+          $('#dropdownMenuButton').prop('disabled', false)
+        }else {
+          $('#dropdownMenuButton').prop('disabled', true)
+        }
+      });
+    </script>
+    <script type="text/javascript">
+      function submit() {
+        var values = [];
+        $("input[type=checkbox]:checked").each(function(){
+            values.push($(this).val());
+        });
+        var id = values.join();
+        var dataString = 'diamondId=' + id;
+        $.ajax
+        ({
+         type: "POST",
+         url: "_freeTransit.php",
+         data: dataString,
+         cache: false,
+         success: function(val)
+         {
+            if (val == 1) {
+              swal({
+                title: "Good job!",
+                text: "The selected diamonds are freed from intransit",
+                icon: "success",
+              }).then(function () {
+                location.reload();
+              });
+            }else {
+              swal({
+                title: "Oh no!",
+                text: "The selected diamonds couldnt be freed from intransit",
+                icon: "error",
+              }).then(function () {
+                location.reload();
+              });
+            }
+         }
+        });
+      }
     </script>
   </body>
 </html>
