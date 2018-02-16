@@ -71,9 +71,9 @@
         <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
+        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
         <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
@@ -123,9 +123,9 @@
         <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
+        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
         <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
@@ -151,7 +151,7 @@
     }elseif ($row_diamond['diamond_status'] == 'Reserve') {
       echo "
       <tr style='font-size:12px;' class='table-primary'>
-        <td></td>
+        <td><input type='checkbox' class='checkbox freetrans' name='diaid[]' value=".$row_diamond['diamond_id']."></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -178,9 +178,9 @@
         <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
+        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
         <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
@@ -230,9 +230,9 @@
         <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
+        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
         <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
@@ -255,7 +255,7 @@
     }else {
       echo "
       <tr style='font-size:12px;'>
-        <td></td>
+        <td><input type='checkbox' class='checkbox freetrans' name='diaid[]' value=".$row_diamond['diamond_id']."></td>
         <td>".$row_diamond['diamond_lot_no']."</td>
         <td>".$row_office['office_name']."</td>
         <td>".$row_shape['attribute_name']."</td>
@@ -282,9 +282,9 @@
         <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
+        <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
         <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
@@ -310,7 +310,12 @@
 ?>
 <script type="text/javascript">
   $(".freetrans").click(function(){
-    $('#dropdownMenuButton').prop('disabled', false)
+    var numberOfChecked = $('input:checkbox:checked').length;
+    if (numberOfChecked > 0) {
+      $('#dropdownMenuButton').prop('disabled', false)
+    }else {
+      $('#dropdownMenuButton').prop('disabled', true)
+    }
     // var isDisabled = $('#dropdownMenuButton').is(':disabled');
     // if (isDisabled) {
     //   $('#dropdownMenuButton').prop('disabled', false)
