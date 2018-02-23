@@ -4,8 +4,11 @@
 
   $sql_table = mysqli_query($con,"SELECT DISTINCT (`diamond_status`), COUNT(*) AS statusCount,CEIL(SUM(`diamond_size`)) AS sumCarat FROM `diamonds` WHERE    `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%'  AND `diamond_status` NOT IN ('Invoiced' , 'Deleted') GROUP BY (`diamond_status`)");
 
+  $sql_table_status = mysqli_query($con,"SELECT DISTINCT (`diamond_status`) FROM `diamonds` WHERE  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%'  AND `diamond_status` NOT IN ('Invoiced' , 'Deleted') GROUP BY (`diamond_status`)");
+
   $sql_ofice = mysqli_query($con,"SELECT DISTINCT(`office_name`),`office_id` FROM offices WHERE `office_name` NOT IN ('All','".$_SESSION['officename']."')");
 
+  $sql_office_search = mysqli_query($con,"SELECT DISTINCT(`office_name`),`office_id` FROM offices");
  ?>
 <!DOCTYPE html>
 <html>
@@ -15,6 +18,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>DSM Diamonds | Certified</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   </head>
   <body>
     <header  style="padding-bottom:20px;">
@@ -27,7 +31,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto navbar-right">
             <li class="nav-item active">
-              <a class="nav-link" href="dsm_excercise.php">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="dsm_excercise.php">Certified Diamond <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="black_diamond.php">Black Diamond</a>
@@ -56,6 +60,36 @@
               <a class="dropdown-item" href="javascript:void(0)" onclick="submit()">Free items from Intransit</a>
               <a class="dropdown-item" href="javascript:void(0)" onclick="transfer()" data-toggle="modal" data-target="#transferModal">Transfer</a>
               <a class="dropdown-item" href="javascript:void(0)" onclick="release()" data-toggle="modal" data-target="#transferModal">Release Reserve</a>
+              <a class="dropdown-item" href="javascript:void(0)" onclick="deleterecord()">Delete</a>
+            </div>
+          </div>
+          <div class="mt-3">
+            <div class="card">
+              <div class="card-header">
+                Search
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="inputStatus">Choose Status</label>
+                    <select id="inputStatus" class="form-control">
+                      <option selected>Choose Status</option>
+                      <?php while($row_status_search = mysqli_fetch_assoc($sql_table_status)): ?>
+                        <option value="<?= $row_status_search['diamond_status'] ?>"><?= $row_status_search['diamond_status'] ?></option>
+                      <?php endwhile; ?>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="inputOffice">Choose Office</label>
+                    <select id="inputOffice" class="form-control">
+                      <option selected disabled>Choose Office</option>
+                      <?php while($row_office_search = mysqli_fetch_assoc($sql_office_search)): ?>
+                        <option value="<?= $row_office_search['office_id'] ?>"><?= $row_office_search['office_name'] ?></option>
+                      <?php endwhile; ?>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -63,9 +97,6 @@
           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Status</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Certified</a>
             </li>
           </ul>
           <div class="tab-content" id="pills-tabContent">
@@ -113,36 +144,31 @@
                 </tbody>
               </table>
             </div>
-            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>Desc / Type</th>
-                    <th>Certified</th>
-                    <th>Temp.Cert.</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </div>
       <div class="row">
-        <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
-          <?php
-            $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
-            $row_count = mysqli_fetch_array($sql_count);
-           ?>
-           <?php if ($row_count[0] > 0): ?>
-             <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" id="product<?= $row_shape['attribute_id'] ?>" class="btn btn-sm btn-outline-primary product" style="margin-left:15px; margin-bottom:15px;">
-               <?= $row_shape['attribute_label']." (".$row_count[0].")"?>
-             </button>
-           <?php endif; ?>
-        <?php endwhile; ?>
+        <div class="ml-auto mb-5">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-sm btn-outline-info" onclick="location.reload()"><i class="ion-eye"></i> View All</button>
+            <button type="button" class="btn btn-sm btn-outline-warning">Check All</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="shapebox">
+          <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
+            <?php
+              $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
+              $row_count = mysqli_fetch_array($sql_count);
+             ?>
+             <?php if ($row_count[0] > 0): ?>
+               <button type="button" value="<?= $row_shape['attribute_id'] ?>" name="button" id="product<?= $row_shape['attribute_id'] ?>" class="btn btn-sm btn-outline-primary product" style="margin-left:15px; margin-bottom:15px;">
+                 <?= $row_shape['attribute_label']." (".$row_count[0].")"?>
+               </button>
+             <?php endif; ?>
+          <?php endwhile; ?>
+        </div>
       </div>
     </div>
     <div class="container-fluid">
@@ -237,7 +263,8 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
       $(window).load(function() {
-        $("#product2").addClass("active");
+        var id = $('.shapebox button:first-child').attr('id')
+        $("#"+id).addClass("active");
         $.ajax({
           url: "_show_diamond.php",
           context: document.body,
@@ -402,6 +429,69 @@
          }
         });
       }
+    </script>
+    <script type="text/javascript">
+      function deleterecord(){
+        if (confirm("Do you want to delete the selected diamonds")) {
+            var values = [];
+            $("input[type=checkbox]:checked").each(function(){
+                values.push($(this).val());
+            });
+            var id = values.join();
+            var dataString = 'diamondId=' + id;
+            $.ajax
+            ({
+             type: "POST",
+             url: "_delete_diamonds.php",
+             data: dataString,
+             cache: false,
+             success: function(val)
+             {
+                if (val == 1) {
+                  swal({
+                    title: "Good job!",
+                    text: "The selected diamonds are deleted",
+                    icon: "success",
+                  }).then(function () {
+                    location.reload();
+                  });
+                }else {
+                  swal({
+                    title: "Oh no!",
+                    text: "The selected diamonds couldnt be deleted",
+                    icon: "error",
+                  }).then(function () {
+                    location.reload();
+                  });
+                }
+             }
+            });
+        } else {
+            alert('No it doesnt');
+        }
+      }
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#inputOffice").change(function()
+          {
+             var shape =  $('.product.active').val();
+             var id=$(this).val();
+             id = encodeURIComponent(id);
+             var dataString = 'id='+ id + '&shape=' + shape;
+             $.ajax
+             ({
+              type: "POST",
+              url: "_search_office_cert.php",
+              data: dataString,
+              cache: false,
+               success: function(html)
+               {
+                  $("#display").html(html);
+               }
+             });
+          });
+      });
     </script>
   </body>
 </html>
