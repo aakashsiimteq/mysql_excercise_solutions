@@ -30,13 +30,13 @@
               <a class="nav-link" href="dsm_excercise.php">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="black_diamond.php">Black Diamond</a>
+              <a class="nav-link" href="#">Black Diamond</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="fancy_diamond.php">Fancy Diamond</a>
+              <a class="nav-link" href="#">Fancy Diamond</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="matching_pair.php">Matching Pair</a>
+              <a class="nav-link" href="#">Matching Pair</a>
             </li>
           </ul>
         </div>
@@ -134,7 +134,7 @@
       <div class="row">
         <?php while($row_shape = mysqli_fetch_assoc($sql_shape)): ?>
           <?php
-            $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
+            $sql_count = mysqli_query($con, "SELECT COUNT(*) from `diamonds` WHERE `diamond_shape_id` = '".$row_shape['attribute_id']."' AND  `diamond_type` = 'MatchingPair' AND `diamond_lot_no` LIKE 'M%' AND `diamond_status` NOT IN ('Invoiced','Deleted')");
             $row_count = mysqli_fetch_array($sql_count);
            ?>
            <?php if ($row_count[0] > 0): ?>
@@ -237,9 +237,9 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
       $(window).load(function() {
-        $("#product2").addClass("active");
+        $("#product17").addClass("active");
         $.ajax({
-          url: "_show_diamond.php",
+          url: "_show_diamond_mp.php",
           context: document.body,
           success: function(html){
              $("#display").html(html);
@@ -257,7 +257,7 @@
              $.ajax
              ({
               type: "POST",
-              url: "_show_diamond.php",
+              url: "_show_diamond_mp.php",
               data: dataString,
               cache: false,
               success: function(html)
