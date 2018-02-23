@@ -17,7 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>DSM Diamonds | Certified</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="vendor/bootstrap.css">
     <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   </head>
   <body>
@@ -85,6 +85,30 @@
                       <option selected disabled>Choose Office</option>
                       <?php while($row_office_search = mysqli_fetch_assoc($sql_office_search)): ?>
                         <option value="<?= $row_office_search['office_id'] ?>"><?= $row_office_search['office_name'] ?></option>
+                      <?php endwhile; ?>
+                    </select>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <?php
+                        $query = "SELECT
+                                    3 * (`diamond_size` div 3) as 'from',
+                                    3 * (`diamond_size` div 3) + 2 as 'to',
+                                    COUNT(*) as `numbDiamond`
+                                  FROM diamonds
+                                  WHERE `diamond_type` = 'Certified'
+                                  AND `diamond_lot_no` LIKE 'C%'
+                                  AND `diamond_status` NOT IN ('Invoiced','Deleted')
+                                  GROUP BY `diamond_size` div 3";
+                        $sql_carat_range =   mysqli_query($con, $query);
+
+                     ?>
+                    <label for="inputCarat">Choose Carat Range</label>
+                    <select id="inputCarat" class="form-control">
+                      <option selected disabled>Choose Carat Range</option>
+                      <?php while($row_carat_range = mysqli_fetch_assoc($sql_carat_range)): ?>
+                        <option value="<?= $row_carat_range['from'] .'-'. $row_carat_range['to'] ?>">
+                          <?= $row_carat_range['from'] .' - '. $row_carat_range['to'] .' ( '.$row_carat_range['numbDiamond'].' )' ?>
+                        </option>
                       <?php endwhile; ?>
                     </select>
                   </div>
@@ -257,9 +281,9 @@
         </div>
       </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="vendor/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
       $(window).load(function() {
@@ -483,6 +507,28 @@
              ({
               type: "POST",
               url: "_search_office_cert.php",
+              data: dataString,
+              cache: false,
+               success: function(html)
+               {
+                  $("#display").html(html);
+               }
+             });
+          });
+      });
+    </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#inputCarat").change(function()
+          {
+             var shape = $('.product.active').val();
+             var id=$(this).val();
+             id = encodeURIComponent(id);
+             var dataString = 'carat='+ id + '&shape=' + shape;
+             $.ajax
+             ({
+              type: "POST",
+              url: "_search_dia_cert_carat.php",
               data: dataString,
               cache: false,
                success: function(html)

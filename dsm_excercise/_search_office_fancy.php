@@ -2,10 +2,11 @@
 
   include 'core/init.php';
 
+  $office_id = $_POST['id'];
   $diamond_shape = $_POST['shape'];
 
-  if (!isset($diamond_shape)) {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '2' AND  diamond_type ='Black' AND `diamond_lot_no` LIKE 'B%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
+  if ($office_id != '4') {
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND `office_id` = '".$office_id."' AND  diamond_type ='Black' AND `diamond_lot_no` LIKE 'B%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
   } else {
     $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  diamond_type ='Black' AND `diamond_lot_no` LIKE 'B%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
   }

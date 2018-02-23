@@ -6,9 +6,9 @@
   $diamond_shape = $_POST['shape'];
 
   if ($office_id != '4') {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND `office_id` = '".$office_id."' AND `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND `office_id` = '".$office_id."' AND  diamond_type ='MatchingPair' AND `diamond_lot_no` LIKE 'M%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
   } else {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
+    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  diamond_type ='MatchingPair' AND `diamond_lot_no` LIKE 'M%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC");
   }
   while($row_diamond = mysqli_fetch_assoc($sql_diamond)){
 
@@ -61,39 +61,24 @@
         <td></td>
         <td>".$row_diamond['diamond_ains']."</td>
         <td>".$row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3']."</td>
-        <td>".'$'. $row_diamond['diamond_price_rapnet'] ."</td>
-        <td>".$row_diamond['diamond_discount']. '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct'],2)."</td>
         <td>".'$'. round($row_diamond['diamond_price_total'],2)."</td>
-        <td>".$row_diamond['diamond_discount_revaluated'] . '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_revaluated'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_revaluated'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_rapnet_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
-        <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
         ";
-        if ($row_diamond['diamond_show_rapnet'] == 'Yes'){
-          echo "<td>Show</td>";
-        }
-        else{
-          echo "<td>Hide</td>";
-        }
         echo "<td>".date('d/m/Y',strtotime($row_diamond['diamond_purchase_date']))."</td>";
         if ($row_diamond['diamond_party_name'] == ''){
           echo "<td>Not available</td>";
         }else{
           echo "<td>".$row_diamond['diamond_party_name']."</td>";
         }
-        echo" <td>".$row_diamond['diamond_approval_no']."</td>
-        <td></td>
-      </tr>";
+        echo"</tr>";
     }elseif ($row_diamond['diamond_status'] == 'On Consignment') {
       echo "
       <tr style='font-size:12px;' class='table-danger'>
@@ -113,42 +98,24 @@
         <td></td>
         <td>".$row_diamond['diamond_ains']."</td>
         <td>".$row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3']."</td>
-        <td>".'$'. $row_diamond['diamond_price_rapnet'] ."</td>
-        <td>".$row_diamond['diamond_discount']. '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct'],2)."</td>
         <td>".'$'. round($row_diamond['diamond_price_total'],2)."</td>
-        <td>".$row_diamond['diamond_discount_revaluated'] . '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_revaluated'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_revaluated'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_rapnet_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
-        <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
         ";
-        if ($row_diamond['diamond_show_rapnet'] == 'Yes'){
-          echo "<td>Show</td>";
-        }
-        else{
-          echo "<td>Hide</td>";
-        }
         echo "<td>".date('d/m/Y',strtotime($row_diamond['diamond_purchase_date']))."</td>";
         if ($row_diamond['diamond_party_name'] == ''){
           echo "<td>Not available</td>";
         }else{
           echo "<td>".$row_diamond['diamond_party_name']."</td>";
         }
-        echo" <td>".$row_diamond['diamond_approval_no']."</td>
-        <td></td>
-      </tr>";
-
-
-
+        echo"</tr>";
     }elseif ($row_diamond['diamond_status'] == 'Reserve') {
       echo "
       <tr style='font-size:12px;' class='table-primary'>
@@ -168,39 +135,24 @@
         <td></td>
         <td>".$row_diamond['diamond_ains']."</td>
         <td>".$row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3']."</td>
-        <td>".'$'. $row_diamond['diamond_price_rapnet'] ."</td>
-        <td>".$row_diamond['diamond_discount']. '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct'],2)."</td>
         <td>".'$'. round($row_diamond['diamond_price_total'],2)."</td>
-        <td>".$row_diamond['diamond_discount_revaluated'] . '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_revaluated'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_revaluated'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_rapnet_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
-        <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
         ";
-        if ($row_diamond['diamond_show_rapnet'] == 'Yes'){
-          echo "<td>Show</td>";
-        }
-        else{
-          echo "<td>Hide</td>";
-        }
         echo "<td>".date('d/m/Y',strtotime($row_diamond['diamond_purchase_date']))."</td>";
         if ($row_diamond['diamond_party_name'] == ''){
           echo "<td>Not available</td>";
         }else{
           echo "<td>".$row_diamond['diamond_party_name']."</td>";
         }
-        echo" <td>".$row_diamond['diamond_approval_no']."</td>
-        <td></td>
-      </tr>";
+        echo"</tr>";
     }elseif ($row_diamond['diamond_status'] == 'In Transfer Process') {
       echo "
       <tr style='font-size:12px;' class='table-success'>
@@ -220,39 +172,24 @@
         <td></td>
         <td>".$row_diamond['diamond_ains']."</td>
         <td>".$row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3']."</td>
-        <td>".'$'. $row_diamond['diamond_price_rapnet'] ."</td>
-        <td>".$row_diamond['diamond_discount']. '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct'],2)."</td>
         <td>".'$'. round($row_diamond['diamond_price_total'],2)."</td>
-        <td>".$row_diamond['diamond_discount_revaluated'] . '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_revaluated'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_revaluated'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_rapnet_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
-        <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
         ";
-        if ($row_diamond['diamond_show_rapnet'] == 'Yes'){
-          echo "<td>Show</td>";
-        }
-        else{
-          echo "<td>Hide</td>";
-        }
         echo "<td>".date('d/m/Y',strtotime($row_diamond['diamond_purchase_date']))."</td>";
         if ($row_diamond['diamond_party_name'] == ''){
           echo "<td>Not available</td>";
         }else{
           echo "<td>".$row_diamond['diamond_party_name']."</td>";
         }
-        echo" <td>".$row_diamond['diamond_approval_no']."</td>
-        <td></td>
-      </tr>";
+        echo"</tr>";
     }else {
       echo "
       <tr style='font-size:12px;'>
@@ -272,39 +209,24 @@
         <td></td>
         <td>".$row_diamond['diamond_ains']."</td>
         <td>".$row_diamond['diamond_meas1'] .' X '. $row_diamond['diamond_meas2'] .' X '. $row_diamond['diamond_meas3']."</td>
-        <td>".'$'. $row_diamond['diamond_price_rapnet'] ."</td>
-        <td>".$row_diamond['diamond_discount']. '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct'],2)."</td>
         <td>".'$'. round($row_diamond['diamond_price_total'],2)."</td>
-        <td>".$row_diamond['diamond_discount_revaluated'] . '%' ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_revaluated'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_revaluated'],2) ."</td>
-        <td>".'$'. round($row_diamond['diamond_price_rapnet_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_final']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_final'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_total_final'],2) ."</td>
-        <td>".$row_diamond['diamond_discount_sell']. '%'  ."</td>
         <td>".'$'. round($row_diamond['diamond_price_perct_sell'],2) ."</td>
         <td>".'$'. round($row_diamond['diamond_price_sell'],2) ."</td>
         <td>".$row_diamond['diamond_status'] ."</td>
-        <td>".$row_customer['company_name'] ."</td>
         <td>".$row_diamond['diamond_status_front'] ."</td>
         ";
-        if ($row_diamond['diamond_show_rapnet'] == 'Yes'){
-          echo "<td>Show</td>";
-        }
-        else{
-          echo "<td>Hide</td>";
-        }
         echo "<td>".date('d/m/Y',strtotime($row_diamond['diamond_purchase_date']))."</td>";
         if ($row_diamond['diamond_party_name'] == ''){
           echo "<td>Not available</td>";
         }else{
           echo "<td>".$row_diamond['diamond_party_name']."</td>";
         }
-        echo" <td>".$row_diamond['diamond_approval_no']."</td>
-        <td></td>
-      </tr>";
+        echo"</tr>";
     }
 
   }

@@ -11,7 +11,7 @@
   }
   while($row_diamond = mysqli_fetch_assoc($sql_diamond)){
 
-      $sql_office = mysqli_query($con,"SELECT `office_name` FROM dsm_project.`offices` WHERE `office_id` = '".$row_diamond['office_id']."'");
+      $sql_office = mysqli_query($con,"SELECT `office_name` FROM `offices` WHERE `office_id` = '".$row_diamond['office_id']."'");
       $row_office = mysqli_fetch_assoc($sql_office);
 
       $sql_shape = mysqli_query($con,"SELECT `attribute_name` FROM `attributes` WHERE `attribute_id` = '".$row_diamond['diamond_shape_id']."'");

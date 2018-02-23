@@ -2,14 +2,15 @@
 
   include 'core/init.php';
 
-  $office_id = $_POST['id'];
+  $carat_range = $_POST['carat'];
+  $carat_range = explode("-",$carat_range);
+  $from = $carat_range[0];
+  $to = $carat_range[1];
   $diamond_shape = $_POST['shape'];
 
-  if ($office_id != '4') {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND `office_id` = '".$office_id."' AND `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
-  } else {
-    $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_shape_id` = '$diamond_shape' AND  `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
-  }
+  $sql_diamond = mysqli_query($con,"SELECT * FROM `diamonds` WHERE `diamond_size` BETWEEN '$from' AND '$to'  AND `diamond_shape_id` = '".$diamond_shape."' AND `diamond_type` = 'Certified' AND `diamond_lot_no` LIKE 'C%' AND `diamond_status` NOT IN ('Invoiced','Deleted') ORDER BY `diamond_id` DESC LIMIT 50");
+
+
   while($row_diamond = mysqli_fetch_assoc($sql_diamond)){
 
       $sql_office = mysqli_query($con,"SELECT `office_name` FROM `offices` WHERE `office_id` = '".$row_diamond['office_id']."'");
